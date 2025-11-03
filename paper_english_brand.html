@@ -1,0 +1,218 @@
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import mm
+from reportlab.lib.colors import HexColor
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+
+# Register Japanese fonts
+pdfmetrics.registerFont(UnicodeCIDFont("HeiseiMin-W3"))
+pdfmetrics.registerFont(UnicodeCIDFont("HeiseiKakuGo-W5"))
+
+# File setup
+pdf_path = "Paper_and_English_The_Method_Journal_Part1.pdf"
+c = canvas.Canvas(pdf_path, pagesize=A4)
+width, height = A4
+
+# Color palette
+deep_charcoal = HexColor("#1A1A1A")
+soft_gray_black = HexColor("#333333")
+terracotta_red = HexColor("#D9534F")
+light_gray = HexColor("#AAAAAA")
+line_gray = HexColor("#DDDDDD")
+background = HexColor("#F8F8F8")
+
+margin = 25 * mm
+
+def draw_background():
+    c.setFillColor(background)
+    c.rect(0, 0, width, height, fill=1, stroke=0)
+
+def draw_page_number(num):
+    c.setFont("HeiseiKakuGo-W5", 10)
+    c.setFillColor(light_gray)
+    c.drawCentredString(width / 2, 10 * mm, str(num))
+
+def draw_lines(start_y, end_y, spacing=14):
+    c.setStrokeColor(line_gray)
+    y = start_y
+    while y > end_y:
+        c.line(margin, y, width - margin, y)
+        y -= spacing
+
+# Page 1
+draw_background()
+c.setFont("HeiseiMin-W3", 28)
+c.setFillColor(deep_charcoal)
+c.drawCentredString(width/2, height-120, "The Method | A Guided Journal")
+c.setFont("HeiseiKakuGo-W5", 14)
+c.drawCentredString(width/2, height-145, "<How to Create Your Proof>")
+c.setFont("HeiseiMin-W3", 18)
+c.drawCentredString(width/2, height-170, "<あなたの証の創り方>")
+text = """SNSを開けば、きらびやかな光が溢れている。
+それに比べて、自分は──。
+デスクの上の静かな影の中で、「本当にこのままでいいのかな」という漠然とした不安が、ふと心をよぎることはありませんか。
+これは、そんなあなたのためのものです。
+ただの美しい紙ではありません。
+あなたの孤独な努力に光を当てる、一枚の「証」であり、毎朝あなたの背中をそっと押す、静かな「パートナー」。
+このジャーナルは、あなたが、あなた自身の「お守り」を創るための、最初の一歩です。"""
+c.setFont("HeiseiKakuGo-W5", 10.5)
+c.setFillColor(soft_gray_black)
+textobject = c.beginText(margin, height-230)
+textobject.textLines(text)
+c.drawText(textobject)
+c.setFont("HeiseiMin-W3", 12)
+c.setFillColor(deep_charcoal)
+c.drawRightString(width-margin, 45*mm, "Paper & English ✒︎")
+draw_page_number(1)
+c.showPage()
+
+# Page 2–5 essays
+essays = [
+("なぜ、この書斎が生まれたのか", """このブランドは、私自身の「痛み」から生まれました。
+創り手である私自身が、先の見えない言語学習の道で、心を折られかけたことがあります。
+どれだけ時間を費やしても、SNSで見る「成功」には、一向に手が届かない。
+「私だけが、停滞しているのではないか」
+そんな自己嫌悪が、デスクの上の影を、より一層濃くしていました。
+そんなある夜、ふと、これまで書き殴ってきた一枚のルーズリーフが目に入ったのです。
+そこには、美しい文字は何一つありませんでした。
+ただ、愛用のボールペン（SARASAでした）で、びっしりと書き込まれた、無骨なインクの跡。
+試行錯誤の軌跡、書き損じの跡、まだ言葉にもなっていない思考の断片。
+それを見た瞬間、なぜか、涙が溢れたのです。
+「ああ、私は、こんなにも自分の時間を使って、確かに、ここにいたんだ」と。"""),
+("「非効率な情熱」と「インクの温もり」", """あのルーズリーフは、決して「効率的」な学習の証拠ではなかった。
+むしろ、遠回りばかりの「非効率な情熱」の塊でした。
+けれど、その「無骨な努力の跡」こそが、デジタルの世界に溢れる、誰かの「完璧な結果」よりも、何百倍も強く、私の心を守ってくれた。
+それが、私にとっての、何よりの「お守り」になったのです。
+私たちは、いつの間にか「結果」や「効率」ばかりを求める世界に生きています。
+でも、本当に私たちを支えてくれるのは、結果に至るまでの、あの泥臭い「過程」そのものではないか。
+高価な万年筆で書かれた清書ではなく、日常のペンで書き殴られた、あの「インクの温もり」ではないか。
+このジャーナルは、その「インクの温もり」こそが、デジタルの光にはない、本物の「静かな自信」を与えてくれると信じる、私たちの哲学そのものです。"""),
+("これは「タスク管理」ではない。「儀式」である。", """このジャーナルは、あなたのタスクを管理し、生産性を上げるためのものではありません。
+これは、あなたの「心」を整えるためのものです。
+これは、毎朝、あなたがお気に入りのコーヒーを淹れるように、あなた自身の「内側」に触れるための、神聖な「儀式」です。
+デジタルの喧騒から、物理的に、あなた自身を引き離す。
+紙の質感に触れ、愛用のペンのインクが紙に染み込む音を聞く。
+そして、昨日までのあなた自身の「証」に触れることで、今日一日を始める「合図」とする。
+この「儀式」こそが、SNSの光に揺らがない、あなただけの「聖域」を創り上げます。"""),
+("あなた自身の「証」を創る旅へ", """このジャーナルは、私の「軌跡」を鑑賞するものではありません。
+あなたが、「あなた自身の軌跡」を、今日この瞬間から創造し始めるための、最初の「道具」です。
+今日から7日間。
+ほんの数分で構いません。
+あなたのデスクの上で、あなた自身の「証」を創る、静かな旅を始めましょう。
+難しく考える必要はありません。
+ただ、あなたの「インクの温もり」を、この紙の上に、そっと残していくだけです。
+さあ、準備はいいですか？
+あなたのための、最初の「儀式」が始まります。""")
+]
+
+for i, (title, body) in enumerate(essays, start=2):
+    draw_background()
+    c.setFont("HeiseiMin-W3", 18)
+    c.setFillColor(deep_charcoal)
+    c.drawString(margin, height - margin - 20, title)
+    c.setFont("HeiseiKakuGo-W5", 10.5)
+    c.setFillColor(soft_gray_black)
+    text_obj = c.beginText(margin, height - 80)
+    text_obj.textLines(body)
+    c.drawText(text_obj)
+    draw_page_number(i)
+    c.showPage()
+
+# Day 1 intro (P.6)
+draw_background()
+c.setFont("HeiseiMin-W3", 20)
+c.setFillColor(terracotta_red)
+c.drawString(margin, height - margin - 20, "Day 1: 最初の一滴 (The First Ink)")
+intro = """ようこそ。最初の「儀式」へ。
+壮大な物語も、すべては最初の一行から始まります。
+今日、あなたがこのページに残す「最初の一滴」のインクが、あなたの「お守り」を創る、記念すべき始まりです。
+完璧である必要はありません。ただ、そこに「在る」ことを、確かめるだけでいい。"""
+c.setFont("HeiseiKakuGo-W5", 10.5)
+text_obj = c.beginText(margin, height - 100)
+text_obj.textLines(intro)
+c.drawText(text_obj)
+ritual = """【今日の儀式】
+・静かな場所で、お気に入りの飲み物を用意する。
+・スマートフォンを手の届かない場所に置く。
+・あなたの愛用のペンを手に取る。
+・次のページの問いに心を澄ませて、最初の一行を記す。"""
+text_obj = c.beginText(margin, height - 200)
+text_obj.textLines(ritual)
+c.drawText(text_obj)
+draw_page_number(6)
+c.showPage()
+
+# Day 1 writing (P.7)
+draw_background()
+c.setFont("HeiseiMin-W3", 16)
+c.setFillColor(deep_charcoal)
+c.drawString(margin, height - margin - 20, "Day 1:")
+q1 = "昨日、あなたが「確かに生きた」証（あかし）は何ですか？"
+c.setFont("HeiseiKakuGo-W5", 11)
+c.drawString(margin, height - 60, q1)
+sub = "（どんなに小さなことでも構いません。読んだ本の1ページ、覚えた英単語一つ、誰かにかけた優しい言葉、それを書き留めてください）"
+text_obj = c.beginText(margin, height - 80)
+text_obj.textLines(sub)
+c.drawText(text_obj)
+c.setFont("HeiseiKakuGo-W5", 11)
+c.setFillColor(light_gray)
+c.drawString(margin, height - 120, "My Proof of Hours | 私の時間の証")
+draw_lines(height - 140, margin + 20)
+draw_page_number(7)
+c.showPage()
+
+# Day 2 intro (P.8)
+draw_background()
+c.setFont("HeiseiMin-W3", 20)
+c.setFillColor(terracotta_red)
+c.drawString(margin, height - margin - 20, "Day 2: 非効率な情熱 (Loving the Process)")
+intro2 = """二日目の朝へ、ようこそ。
+昨日は、どんな「証」が残せましたか？
+私たちは「結果」や「効率」を求められますが、あなたの心を本当に豊かにするのは、一見「無駄」に見える「非効率な情熱」です。
+今日は、その「過程」そのものに、光を当ててみましょう。"""
+c.setFont("HeiseiKakuGo-W5", 10.5)
+text_obj = c.beginText(margin, height - 100)
+text_obj.textLines(intro2)
+c.drawText(text_obj)
+ritual2 = """【今日の儀式】
+・静かな場所で、飲み物を用意する。
+・昨日と同じペンを手に取る。
+・次のページの問いについて、あなたの「非効率」で「尊い」時間を思い出す。"""
+text_obj = c.beginText(margin, height - 200)
+text_obj.textLines(ritual2)
+c.drawText(text_obj)
+draw_page_number(8)
+c.showPage()
+
+# Day 2 writing (P.9)
+draw_background()
+c.setFont("HeiseiMin-W3", 16)
+c.setFillColor(deep_charcoal)
+c.drawString(margin, height - margin - 20, "Day 2:")
+q2 = "今日、あなたが「結果のため」ではなく、「ただ、それ自体が尊いから」という理由で行う、非効率な情熱は何ですか？"
+c.setFont("HeiseiKakuGo-W5", 11)
+text_obj = c.beginText(margin, height - 60)
+text_obj.textLines(q2)
+c.drawText(text_obj)
+sub2 = "（例：時間を忘れて没頭する趣味、答えの出ない思索、効率度外視で淹れるコーヒー）"
+text_obj = c.beginText(margin, height - 110)
+text_obj.textLines(sub2)
+c.drawText(text_obj)
+c.setFont("HeiseiKakuGo-W5", 11)
+c.setFillColor(light_gray)
+c.drawString(margin, height - 130, "My Proof of Hours | 私の時間の証")
+draw_lines(height - 150, margin + 20)
+draw_page_number(9)
+c.showPage()
+
+# Placeholder for Day 3 intro (P.10)
+draw_background()
+c.setFont("HeiseiKakuGo-W5", 12)
+c.setFillColor(soft_gray_black)
+c.drawString(margin, height - margin - 20, "（ここから Day 3: 静かな影 へ続く）")
+draw_page_number(10)
+c.showPage()
+
+c.save()
+print("✅ PDF（P.1〜P.10）生成完了:", pdf_path)
